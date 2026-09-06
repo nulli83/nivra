@@ -1,9 +1,4 @@
-"""Minimal localhost IMAP-ish skeleton for Nivra.
-
-Full IMAP is a large protocol. This module exposes a threaded TCP
-listener on 127.0.0.1 that speaks a tiny subset useful for learning
-and future expansion (LOGIN, SELECT, FETCH, LOGOUT).
-"""
+"""Minimal localhost IMAP server for Nivra (LOGIN, SELECT, FETCH, LOGOUT)."""
 
 from __future__ import annotations
 
@@ -13,7 +8,7 @@ import threading
 from email.message import EmailMessage
 
 from auth import login_user, normalize_username
-from config import DOMAIN, IMAP_HOST, IMAP_PORT
+from config import IMAP_HOST, IMAP_PORT
 from mail import get_folder, get_mail
 
 logger = logging.getLogger(__name__)
@@ -169,7 +164,3 @@ def start_imap_server(
     thread = IMAPServerThread(host, port)
     thread.start()
     return thread
-
-
-# Silence unused import warning in type checkers: DOMAIN used by docs/clients
-__all__ = ["start_imap_server", "IMAPServerThread", "DOMAIN"]

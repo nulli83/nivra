@@ -18,7 +18,7 @@ def _strip_domain(address: str) -> str:
         local, domain = address.rsplit("@", 1)
         if domain == DOMAIN:
             return local
-        # Foreign domains not supported in v1 (localhost-only)
+        # Endast lokala adresser i v1
         return ""
     return address
 
@@ -140,72 +140,5 @@ def get_mail(mail_id: int, username: str, folder: str = "inbox"):
             conn.commit()
 
         return row
-    finally:
-        conn.close()
-
-
-def move_to_trash(mail_id: int, username: str) -> bool:
-    """Soft-delete: mark as trash (foundation for later UI)."""
-    username = normalize_username(username)
-    addr = address_for(username)
-    conn = get_db()
-    try:
-        cur = conn.execute(
-            """
-            UPDATE emails
-            SET folder = 'trash', deleted = 0
-            WHERE id = ?
-              AND (recipient = ? OR sender = ?)
-            """,
-            (mail_id, addr, addr),
-        )
-        conn.commit()
-        return cur.rowcount > 0
-    finally:
-        conn.close()
-
-
-def search_mails(username: str, query: str, folder: str = "inbox"):
-    """Simple full-text-ish search (foundation for later UI)."""
-    username = normalize_username(username)
-    addr = address_for(username)
-    q = f"%{(query or '').strip().lower()}%"
-
-    conn = get_db()
-    try:
-        if folder == "sent":
-            return conn.execute(
-                """
-                SELECT *
-                FROM emails
-                WHERE sender = ?
-                  AND folder = 'sent'
-                  AND deleted = 0
-                  AND (
-                    lower(subject) LIKE ?
-                    OR lower(body) LIKE ?
-                    OR lower(recipient) LIKE ?
-                  )
-                ORDER BY id DESC
-                """,
-                (addr, q, q, q),
-            ).fetchall()
-
-        return conn.execute(
-            """
-            SELECT *
-            FROM emails
-            WHERE recipient = ?
-              AND folder = ?
-              AND deleted = 0
-              AND (
-                lower(subject) LIKE ?
-                OR lower(body) LIKE ?
-                OR lower(sender) LIKE ?
-              )
-            ORDER BY id DESC
-            """,
-            (addr, folder, q, q, q),
-        ).fetchall()
     finally:
         conn.close()

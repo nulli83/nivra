@@ -1,10 +1,8 @@
-"""SQLite database layer for Nivra."""
+"""SQLite for Nivra."""
 
 from __future__ import annotations
 
 import sqlite3
-from contextlib import contextmanager
-from typing import Iterator
 
 from config import DB_FILE
 
@@ -16,21 +14,9 @@ def get_db() -> sqlite3.Connection:
     return conn
 
 
-@contextmanager
-def db_session() -> Iterator[sqlite3.Connection]:
+def init_db() -> None:
     conn = get_db()
     try:
-        yield conn
-        conn.commit()
-    except Exception:
-        conn.rollback()
-        raise
-    finally:
-        conn.close()
-
-
-def init_db() -> None:
-    with db_session() as conn:
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS users (
@@ -41,7 +27,6 @@ def init_db() -> None:
             )
             """
         )
-
         conn.execute(
             """
             CREATE TABLE IF NOT EXISTS emails (
@@ -57,17 +42,18 @@ def init_db() -> None:
             )
             """
         )
-
         conn.execute(
             """
             CREATE INDEX IF NOT EXISTS idx_emails_recipient_folder
             ON emails(recipient, folder, deleted)
             """
         )
-
         conn.execute(
             """
             CREATE INDEX IF NOT EXISTS idx_emails_sender_folder
             ON emails(sender, folder, deleted)
             """
         )
+        conn.commit()
+    finally:
+        conn.close()

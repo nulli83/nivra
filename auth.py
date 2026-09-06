@@ -31,7 +31,7 @@ def password_hash(password: str, salt: bytes | None = None) -> str:
 def verify_password(password: str, stored: str) -> bool:
     """Verify password against stored salt$hash (or legacy sha256 hex)."""
     if "$" not in stored:
-        # Legacy single-hash from early prototype
+        # Older builds used bare sha256
         legacy = hashlib.sha256(password.encode("utf-8")).hexdigest()
         return hmac.compare_digest(legacy, stored)
 

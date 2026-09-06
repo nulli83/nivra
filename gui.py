@@ -250,10 +250,6 @@ class MailWindow(Gtk.Window):
         sidebar = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         sidebar.get_style_context().add_class("sidebar")
         sidebar.set_size_request(240, -1)
-        sidebar.set_margin_top(0)
-        sidebar.set_margin_bottom(0)
-        sidebar.set_margin_start(0)
-        sidebar.set_margin_end(0)
 
         side_inner = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         side_inner.set_margin_top(25)
@@ -300,9 +296,6 @@ class MailWindow(Gtk.Window):
         self.content.set_margin_end(25)
         main.pack_start(self.content, True, True, 0)
 
-        self.show_folder("inbox")
-
-    def show_inbox(self, _button=None) -> None:
         self.show_folder("inbox")
 
     def show_folder(self, folder: str = "inbox", _button=None) -> None:
