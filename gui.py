@@ -94,11 +94,6 @@ def apply_css() -> None:
     )
 
 
-# ---------------------------------------------------------------------------
-# Login
-# ---------------------------------------------------------------------------
-
-
 class LoginWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title=APP_NAME)
@@ -233,11 +228,6 @@ class RegisterDialog(Gtk.Dialog):
 
         self.set_default_response(Gtk.ResponseType.OK)
         self.show_all()
-
-
-# ---------------------------------------------------------------------------
-# Mail window
-# ---------------------------------------------------------------------------
 
 
 class MailWindow(Gtk.Window):
