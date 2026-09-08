@@ -1,0 +1,6 @@
+# Nivra — Python 3.10+
+#
+# På Windows: installera Python från https://www.python.org/downloads/
+# och kryssa i "Add python.exe to PATH" samt "tcl/tk and IDLE".
+#
+pillow>=10.0.0
